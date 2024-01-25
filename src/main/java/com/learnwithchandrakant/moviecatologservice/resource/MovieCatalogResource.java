@@ -1,6 +1,7 @@
 package com.learnwithchandrakant.moviecatologservice.resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +27,10 @@ public RestTemplate restTemplate;
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
 
-        UserRating userRating=restTemplate.getForObject("http://localhost:8083/ratingdata/users/"+userId,UserRating.class);
+        UserRating userRating=restTemplate.getForObject("http://rating-data-service/ratingdata/users/"+userId,UserRating.class);
 
         return userRating.getUserRating().stream().map(rating-> {
-            Movie movie=restTemplate.getForObject("http://localhost:9090/movie/"+ rating.getMovidId(),Movie.class);
+            Movie movie=restTemplate.getForObject("http://movie-info-service/movie/"+ rating.getMovidId(),Movie.class);
             return  new CatalogItem(movie.getName(), "Desc",rating.getRating());
         }).collect(Collectors.toList());
 
