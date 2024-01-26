@@ -31,7 +31,7 @@ public RestTemplate restTemplate;
 
         return userRating.getUserRating().stream().map(rating-> {
             Movie movie=restTemplate.getForObject("http://movie-info-service/movie/"+ rating.getMovidId(),Movie.class);
-            return  new CatalogItem(movie.getName(), "Desc",rating.getRating());
+            return  new CatalogItem(movie.getName(), movie.getOverview(), rating.getRating());
         }).collect(Collectors.toList());
 
 
